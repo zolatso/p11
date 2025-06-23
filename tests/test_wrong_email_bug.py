@@ -1,14 +1,3 @@
-import pytest
-from server import create_app # Import the create_app function
-
-@pytest.fixture
-def client():
-    app = create_app()
-    with app.test_client() as client:
-        # Push an application context to make url_for and session work
-        with app.app_context():
-            yield client
-
 # Test cases for showSummary
 def test_show_summary_valid_email_found(client):
     """
