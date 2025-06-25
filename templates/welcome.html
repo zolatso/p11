@@ -15,7 +15,16 @@
         {% endfor %}
        </ul>
     {% endif%}
-    Points available: {{club['points']}}
+    <p>Welcome {{club['name']}}, you have {{club['points']}} points available</p>
+    <h3>Other clubs</h3>
+    <ul>
+        {% for c in other_clubs%}
+        <li>
+            {{c['name']}} ({{c['email']}})<br />
+            Points available: {{c['points']}}</br>
+        </li>
+        {% endfor %}
+    </ul>
     <h3>Upcoming Competitions:</h3>
     <ul>
         {% for comp in upcoming_competitions%}
@@ -27,7 +36,6 @@
             <a href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
             {%endif%}
         </li>
-        <hr />
         {% endfor %}
     </ul>
     <h3>Finished Competitions:</h3>
@@ -37,7 +45,6 @@
             {{comp['name']}}<br />
             Date: {{comp['date']}}</br>
         </li>
-        <hr />
         {% endfor %}
     </ul>
     {%endwith%}

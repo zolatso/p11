@@ -35,10 +35,12 @@ def showSummary():
         flash('Invalid email address format. Please enter a valid email.', 'error')
         return redirect(url_for('index'))
     found_club = None
+    other_clubs = []
     for club in clubs:
         if club['email'] == email_input:
             found_club = club
-            break
+        else:
+            other_clubs.append(club)
     if found_club is None:
         flash('Email address not found in our records. Please try again or register.', 'error')
         return redirect(url_for('index'))
@@ -54,7 +56,8 @@ def showSummary():
             finished.append(comp)
     return render_template(
         'welcome.html',
-        club=club,
+        club=found_club,
+        other_clubs=other_clubs,
         finished_competitions=finished,
         upcoming_competitions=upcoming
         )
