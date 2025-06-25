@@ -1,4 +1,5 @@
 import json, re
+from datetime import datetime
 from flask import Flask,render_template,request,redirect,flash,url_for
 
 
@@ -41,7 +42,22 @@ def showSummary():
     if found_club is None:
         flash('Email address not found in our records. Please try again or register.', 'error')
         return redirect(url_for('index'))
-    return render_template('welcome.html',club=club,competitions=competitions)
+    # In order to fix BUG 5 (can't book for past competitions) I create two competitions lists
+    now = datetime.now()
+    upcoming = []
+    finished = []
+    for comp in competitions:
+        comp_date = datetime.strptime(comp['date'], "%Y-%m-%d %H:%M:%S")
+        if comp_date > now:
+            upcoming.append(comp)
+        else:
+            finished.append(comp)
+    return render_template(
+        'welcome.html',
+        club=club,
+        finished_competitions=finished,
+        upcoming_competitions=upcoming
+        )
 
 
 @app.route('/book/<competition>/<club>')
