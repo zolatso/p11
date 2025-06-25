@@ -100,4 +100,21 @@ def test_no_more_than_twelve_points(client):
     """
     TEST TO COVER BUG #3
     """
-    pass
+    initial_post_data = {
+        'competition': 'Spring Festival',
+        'club': 'Iron Temple',
+        'places': '13'
+    }
+    response = client.post('/purchasePlaces', data=initial_post_data)
+    assert response.status_code == 302
+    # Assert that the redirect is to the /book/<competition>/<club> URL
+    assert '/book/Spring%20Festival/Iron%20Temple' in response.headers['Location'] 
+    # 2. Extract the Location header and make a new GET request to that URL
+    # This GET request will be made within the same test client session,
+    # so the flashed message will be available.
+    redirect_target_url = response.headers['Location']
+    redirect_response = client.get(redirect_target_url)
+    assert redirect_response.status_code == 200
+    assert b"cannot choose more than 12 places" in redirect_response.data
+    assert b"error" in redirect_response.data
+    assert b"Places available" in redirect_response.data

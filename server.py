@@ -69,7 +69,11 @@ def purchasePlaces():
     # Check user has not asked for more places than the competition has - BUG 242
     if placesRequired > placesAvailable:
         flash(f'This competition only has {placesAvailable} places available, please choose fewer places', 'error')
-        return redirect(url_for('book', competition=competition['name'], club=club['name']))        
+        return redirect(url_for('book', competition=competition['name'], club=club['name']))
+    # Check user has not asked for more than 12 places - FIXES BUG 4
+    if placesRequired > 12:
+        flash(f'You cannot choose more than 12 places per competition, please choose fewer places', 'error')
+        return redirect(url_for('book', competition=competition['name'], club=club['name']))
     # Checks that club has enough points - FIXES BUG 2
     if placesRequired > pointsAvailable:
         flash(f'You do not have enough points to book that many places. You only have {pointsAvailable} points available', 'error')
