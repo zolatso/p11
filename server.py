@@ -59,16 +59,17 @@ def book(competition,club):
 def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
+    placesAvailable = int(competition['numberOfPlaces'])
     placesRequired = int(request.form['places'])
     pointsAvailable = int(club['points'])
-    # Check user has entered positive number
+    # Check user has entered positive number - FIXES BUG I IDENTIFIED
     if placesRequired <= 0:
         flash(f'You must book at least 1 place', 'error')
         return redirect(url_for('book', competition=competition['name'], club=club['name']))    
-    # Checks that club has enough points
+    # Checks that club has enough points - FIXES BUG 2
     if placesRequired > pointsAvailable:
         flash(f'You do not have enough points to book that many places. You only have {pointsAvailable} points available', 'error')
-        return redirect(url_for('book', competition=competition['name'], club=club['name']))                
+        return redirect(url_for('book', competition=competition['name'], club=club['name']))      
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)

@@ -1,6 +1,7 @@
 # Test cases for showSummary
 def test_show_summary_valid_email_found(client):
     """
+    BUG #1
     Test when a valid email is provided and found in clubs.
     Should render welcome.html with club and competitions data.
     """
@@ -11,6 +12,7 @@ def test_show_summary_valid_email_found(client):
 
 def test_show_summary_invalid_email_format(client):
     """
+    BUG #1
     Test when an email with an invalid format is provided.
     Should redirect to index and flash an error message.
     """
@@ -25,6 +27,7 @@ def test_show_summary_invalid_email_format(client):
 
 def test_show_summary_email_not_found(client):
     """
+    BUG #1
     Test when a validly formatted email is provided but not found in clubs.
     Should redirect to index and flash an error message.
     """
@@ -39,6 +42,7 @@ def test_show_summary_email_not_found(client):
 
 def test_show_summary_no_email_provided(client):
     """
+    BUG #1
     Test when no email is provided (empty form submission).
     Should redirect to index and flash an error message.
     """
