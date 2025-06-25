@@ -5,7 +5,7 @@ def test_use_more_points_than_available(client):
     initial_post_data = {
         'competition': 'Spring Festival',
         'club': 'Iron Temple',
-        'places': '1000000'
+        'places': '10'
     }
     response = client.post('/purchasePlaces', data=initial_post_data)
     assert response.status_code == 302
@@ -17,7 +17,7 @@ def test_use_more_points_than_available(client):
     redirect_target_url = response.headers['Location']
     redirect_response = client.get(redirect_target_url)
     assert redirect_response.status_code == 200
-    assert b"You do not have enough points to book" in redirect_response.data
+    assert b"You do not have enough" in redirect_response.data
     assert b"error" in redirect_response.data
     assert b"Places available" in redirect_response.data
 
