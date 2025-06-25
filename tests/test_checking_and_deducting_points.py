@@ -25,7 +25,24 @@ def test_book_more_places_than_available(client):
     """
     BUG #242
     """
-    pass
+    initial_post_data = {
+        'competition': 'Fall Classic',
+        'club': 'Iron Temple',
+        'places': '14'
+    }
+    response = client.post('/purchasePlaces', data=initial_post_data)
+    assert response.status_code == 302
+    # Assert that the redirect is to the /book/<competition>/<club> URL
+    assert '/book/Fall%20Classic/Iron%20Temple' in response.headers['Location'] 
+    # 2. Extract the Location header and make a new GET request to that URL
+    # This GET request will be made within the same test client session,
+    # so the flashed message will be available.
+    redirect_target_url = response.headers['Location']
+    redirect_response = client.get(redirect_target_url)
+    assert redirect_response.status_code == 200
+    assert b"This competition only has" in redirect_response.data
+    assert b"error" in redirect_response.data
+    assert b"Places available" in redirect_response.data
 
 def test_points_should_be_updated(client):
     """
