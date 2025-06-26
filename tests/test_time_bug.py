@@ -1,6 +1,5 @@
 from server import loadCompetitions, splitCompetitions
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 def test_check_old_competition(client):
     """

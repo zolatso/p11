@@ -44,12 +44,6 @@ def test_book_more_places_than_available(client):
     assert b"error" in redirect_response.data
     assert b"Places available" in redirect_response.data
 
-def test_points_should_be_updated(client):
-    """
-    TEST TO COVER BUG #6
-    """
-    pass
-
 def test_zero_points_error(client):
     """
     NOT OFFICIALLY DEFINED AS A BUG
