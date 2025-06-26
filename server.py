@@ -99,8 +99,11 @@ def purchasePlaces():
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
+@app.route('/displayClubs',methods=['GET'])
+def displayClubs():
+    return render_template('club_display.html', clubs=clubs)
 
-@app.route('displayClubs')
+
 
 
 @app.route('/logout')
