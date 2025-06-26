@@ -8,21 +8,35 @@ def loadClubs():
         listOfClubs = json.load(c)['clubs']
         return listOfClubs
 
-
 def loadCompetitions():
     with open('competitions.json') as comps:
         listOfCompetitions = json.load(comps)['competitions']
         return listOfCompetitions
+    
+def saveClubs(clubs):
+    with open('clubs.json', 'w') as c:
+        json.dump({'clubs': clubs}, c, indent=4)
+
+def saveCompetitions(competitions):
+    with open('competitions.json', 'w') as comps:
+        json.dump({'competitions': competitions}, comps, indent=4)
+
+def splitCompetitions(competitions):
+    now = datetime.now()
+    upcoming = []
+    finished = []
+    for comp in competitions:
+        comp_date = datetime.strptime(comp['date'], "%Y-%m-%d %H:%M:%S")
+        if comp_date > now:
+            upcoming.append(comp)
+        else:
+            finished.append(comp)
+    return upcoming, finished
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_for_tests' # Use a consistent secret key
 app.config['TESTING'] = True # Important for testing, disables error catching for better debugging
-
-competitions = loadCompetitions()
-clubs = loadClubs()
-app.clubs = clubs
-app.competitions = competitions
 
 @app.route('/')
 def index():
@@ -30,6 +44,8 @@ def index():
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
+    competitions = loadCompetitions()
+    clubs = loadClubs()
     email_input = request.form['email']
     if not re.match(r"[^@]+@[^@]+\.[^@]+", email_input):
         flash('Invalid email address format. Please enter a valid email.', 'error')
@@ -44,15 +60,7 @@ def showSummary():
         flash('Email address not found in our records. Please try again or register.', 'error')
         return redirect(url_for('index'))
     # In order to fix BUG 5 (can't book for past competitions) I create two competitions lists
-    now = datetime.now()
-    upcoming = []
-    finished = []
-    for comp in competitions:
-        comp_date = datetime.strptime(comp['date'], "%Y-%m-%d %H:%M:%S")
-        if comp_date > now:
-            upcoming.append(comp)
-        else:
-            finished.append(comp)
+    upcoming, finished = splitCompetitions(competitions)
     return render_template(
         'welcome.html',
         club=found_club,
@@ -63,6 +71,8 @@ def showSummary():
 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
+    competitions = loadCompetitions()
+    clubs = loadClubs()
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
     if foundClub and foundCompetition:
@@ -74,6 +84,8 @@ def book(competition,club):
 
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
+    competitions = loadCompetitions()
+    clubs = loadClubs()
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesAvailable = int(competition['numberOfPlaces'])
@@ -95,15 +107,26 @@ def purchasePlaces():
     if placesRequired > pointsAvailable:
         flash(f'You do not have enough points to book that many places. You only have {pointsAvailable} points available', 'error')
         return redirect(url_for('book', competition=competition['name'], club=club['name']))      
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+    # If all conditions are passed, update points and save the json
+    competition['numberOfPlaces'] = placesAvailable - placesRequired
+    club['points'] = pointsAvailable - placesRequired
+    # Save to the JSON
+    saveClubs(clubs)
+    saveCompetitions(competitions)
     flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+    upcoming, finished = splitCompetitions(competitions)
+    return render_template(
+        'welcome.html',
+        club=club,
+        finished_competitions=finished,
+        upcoming_competitions=upcoming
+        )
+
 
 @app.route('/displayClubs',methods=['GET'])
 def displayClubs():
+    clubs = loadClubs()
     return render_template('club_display.html', clubs=clubs)
-
-
 
 
 @app.route('/logout')
