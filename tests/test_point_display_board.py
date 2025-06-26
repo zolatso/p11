@@ -16,7 +16,6 @@ def test_point_display_feature(client):
     soup = BeautifulSoup(response.data, 'html.parser')
 
     assert response.status_code == 200
-    print(response.data.decode())
     # All other clubs should have their name at the start of a <li> element
     # Whose parent is a <ul> with the id "other clubs"
     for club in other_clubs:
