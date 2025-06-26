@@ -35,6 +35,7 @@ def showSummary():
         flash('Invalid email address format. Please enter a valid email.', 'error')
         return redirect(url_for('index'))
     found_club = None
+    other_clubs = []
     for club in clubs:
         if club['email'] == email_input:
             found_club = club
@@ -42,6 +43,16 @@ def showSummary():
     if found_club is None:
         flash('Email address not found in our records. Please try again or register.', 'error')
         return redirect(url_for('index'))
+    # In order to fix BUG 5 (can't book for past competitions) I create two competitions lists
+    now = datetime.now()
+    upcoming = []
+    finished = []
+    for comp in competitions:
+        comp_date = datetime.strptime(comp['date'], "%Y-%m-%d %H:%M:%S")
+        if comp_date > now:
+            upcoming.append(comp)
+        else:
+            finished.append(comp)
     return render_template(
         'welcome.html',
         club=found_club,
