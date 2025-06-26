@@ -1,4 +1,4 @@
-from server import loadCompetitions
+from server import loadCompetitions, splitCompetitions
 from bs4 import BeautifulSoup
 from datetime import datetime
 
@@ -13,15 +13,7 @@ def test_check_old_competition(client):
 
     # Get two lists of competitions, one with past competitions one with future
     competitions = loadCompetitions()
-    now = datetime.now()
-    upcoming = []
-    finished = []
-    for comp in competitions:
-        comp_date = datetime.strptime(comp['date'], "%Y-%m-%d %H:%M:%S")
-        if comp_date > now:
-            upcoming.append(comp)
-        else:
-            finished.append(comp)
+    upcoming, finished = splitCompetitions(competitions)
 
     # Check that past competitions are listed in <li> elements with <ul> id "past comps"
     for comp in finished:

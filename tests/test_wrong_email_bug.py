@@ -7,7 +7,7 @@ def test_show_summary_valid_email_found(client):
     """
     response = client.post('/showSummary', data={'email': 'admin@irontemple.com'})
     assert response.status_code == 200
-    assert b"Points available" in response.data # Check for a specific string from welcome.html
+    assert b"points available" in response.data # Check for a specific string from welcome.html
     assert b"admin@irontemple.com" in response.data # Check if the club email is displayed
 
 def test_show_summary_invalid_email_format(client):
