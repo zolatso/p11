@@ -29,6 +29,15 @@
         </li>
         {% endfor %}
     </ul>
+    <h3>Finished Competitions:</h3>
+    <ul id="past comps">
+        {% for comp in finished_competitions%}
+        <li>
+            {{comp['name']}}<br />
+            Date: {{comp['date']}}</br>
+        </li>
+        {% endfor %}
+    </ul>
     {%endwith%}
 
 </body>
