@@ -17,7 +17,7 @@
     {% endif%}
     <p>Welcome {{club['name']}}, you have {{club['points']}} points available</p>
     <h3>Other clubs</h3>
-    <ul>
+    <ul id="other clubs">
         {% for c in other_clubs%}
         <li>
             {{c['name']}} ({{c['email']}})<br />
