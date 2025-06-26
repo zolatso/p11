@@ -26,7 +26,7 @@
         {% endfor %}
     </ul>
     <h3>Upcoming Competitions:</h3>
-    <ul>
+    <ul id="upcoming comps">
         {% for comp in upcoming_competitions%}
         <li>
             {{comp['name']}}<br />
@@ -39,7 +39,7 @@
         {% endfor %}
     </ul>
     <h3>Finished Competitions:</h3>
-    <ul>
+    <ul id="past comps">
         {% for comp in finished_competitions%}
         <li>
             {{comp['name']}}<br />
