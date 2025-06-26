@@ -16,9 +16,9 @@
        </ul>
     {% endif%}
     <p>Welcome {{club['name']}}, you have {{club['points']}} points available</p>
-    <h3>Competitions:</h3>
-    <ul>
-        {% for comp in competitions%}
+    <h3>Upcoming Competitions:</h3>
+    <ul id="upcoming comps">
+        {% for comp in upcoming_competitions%}
         <li>
             {{comp['name']}}<br />
             Date: {{comp['date']}}</br>

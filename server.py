@@ -45,7 +45,8 @@ def showSummary():
     return render_template(
         'welcome.html',
         club=found_club,
-        competitions=competitions,
+        finished_competitions=finished,
+        upcoming_competitions=upcoming
         )
 
 
