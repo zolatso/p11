@@ -39,8 +39,7 @@ def showSummary():
     for club in clubs:
         if club['email'] == email_input:
             found_club = club
-        else:
-            other_clubs.append(club)
+            break
     if found_club is None:
         flash('Email address not found in our records. Please try again or register.', 'error')
         return redirect(url_for('index'))
@@ -57,7 +56,6 @@ def showSummary():
     return render_template(
         'welcome.html',
         club=found_club,
-        other_clubs=other_clubs,
         finished_competitions=finished,
         upcoming_competitions=upcoming
         )
