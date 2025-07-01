@@ -36,7 +36,6 @@ def test_check_old_competition(client):
     )
         assert li is not None, f"<li> starting with '{comp['name']}' not found in response"
         # Check that the same li element does not contain the phrase "book places" or any hyperlinks
-        print(li)
         assert "Book Places" in li.get_text(strip=True)
         assert li.find('a') is not None
 

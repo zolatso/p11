@@ -1,38 +1,14 @@
-import json, re
-from datetime import datetime
+import re
 from flask import Flask,render_template,request,redirect,flash,url_for
 
-
-def loadClubs():
-    with open('clubs.json') as c:
-        listOfClubs = json.load(c)['clubs']
-        return listOfClubs
-
-def loadCompetitions():
-    with open('competitions.json') as comps:
-        listOfCompetitions = json.load(comps)['competitions']
-        return listOfCompetitions
-    
-def saveClubs(clubs):
-    with open('clubs.json', 'w') as c:
-        json.dump({'clubs': clubs}, c, indent=4)
-
-def saveCompetitions(competitions):
-    with open('competitions.json', 'w') as comps:
-        json.dump({'competitions': competitions}, comps, indent=4)
-
-def splitCompetitions(competitions):
-    now = datetime.now()
-    upcoming = []
-    finished = []
-    for comp in competitions:
-        comp_date = datetime.strptime(comp['date'], "%Y-%m-%d %H:%M:%S")
-        if comp_date > now:
-            upcoming.append(comp)
-        else:
-            finished.append(comp)
-    return upcoming, finished
-
+from helper_functions import (
+    loadClubs,
+    loadCompetitions,
+    saveClubs,
+    saveCompetitions,
+    splitCompetitions,
+    validatePointsPlaces
+)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_for_tests' # Use a consistent secret key
@@ -51,7 +27,6 @@ def showSummary():
         flash('Invalid email address format. Please enter a valid email.', 'error')
         return redirect(url_for('index'))
     found_club = None
-    other_clubs = []
     for club in clubs:
         if club['email'] == email_input:
             found_club = club
@@ -91,22 +66,10 @@ def purchasePlaces():
     placesAvailable = int(competition['numberOfPlaces'])
     placesRequired = int(request.form['places'])
     pointsAvailable = int(club['points'])
-    # Check user has entered positive number - FIXES BUG I IDENTIFIED
-    if placesRequired <= 0:
-        flash(f'You must book at least 1 place', 'error')
+    valid, error_msg = validatePointsPlaces(placesAvailable, placesRequired, pointsAvailable)
+    if not valid:
+        flash(error_msg, 'error')
         return redirect(url_for('book', competition=competition['name'], club=club['name']))
-    # Check user has not asked for more places than the competition has - BUG 242
-    if placesRequired > placesAvailable:
-        flash(f'This competition only has {placesAvailable} places available, please choose fewer places', 'error')
-        return redirect(url_for('book', competition=competition['name'], club=club['name']))
-    # Check user has not asked for more than 12 places - FIXES BUG 4
-    if placesRequired > 12:
-        flash(f'You cannot choose more than 12 places per competition, please choose fewer places', 'error')
-        return redirect(url_for('book', competition=competition['name'], club=club['name']))
-    # Checks that club has enough points - FIXES BUG 2
-    if placesRequired > pointsAvailable:
-        flash(f'You do not have enough points to book that many places. You only have {pointsAvailable} points available', 'error')
-        return redirect(url_for('book', competition=competition['name'], club=club['name']))      
     # If all conditions are passed, update points and save the json
     competition['numberOfPlaces'] = placesAvailable - placesRequired
     club['points'] = pointsAvailable - placesRequired
