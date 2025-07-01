@@ -1,15 +1,3 @@
-# Test cases for showSummary
-def test_show_summary_valid_email_found(client):
-    """
-    BUG #1
-    Test when a valid email is provided and found in clubs.
-    Should render welcome.html with club and competitions data.
-    """
-    response = client.post('/showSummary', data={'email': 'admin@irontemple.com'})
-    assert response.status_code == 200
-    assert b"points available" in response.data # Check for a specific string from welcome.html
-    assert b"admin@irontemple.com" in response.data # Check if the club email is displayed
-
 def test_show_summary_invalid_email_format(client):
     """
     BUG #1
@@ -62,3 +50,16 @@ def test_index_page(client):
     assert response.status_code == 200
     assert b"Welcome to the GUDLFT Registration Portal!" in response.data
     assert b"Please enter your secretary email to continue:" in response.data
+
+def test_show_summary_valid_email_found(client):
+    """
+    BUG #1
+    Test when a valid email is provided and found in clubs.
+    Should render welcome.html with club and competitions data.
+    """
+    response = client.post('/showSummary', data={'email': 'admin@irontemple.com'})
+    assert response.status_code == 200
+    assert b"points available" in response.data # Check for a specific string from welcome.html
+    assert b"admin@irontemple.com" in response.data # Check if the club email is displayed
+
+
