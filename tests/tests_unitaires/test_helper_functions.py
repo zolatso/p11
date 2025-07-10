@@ -1,59 +1,12 @@
 from server import (
-    loadClubs, 
-    loadCompetitions, 
-    saveClubs, 
-    saveCompetitions, 
     splitCompetitions, 
     validatePointsPlaces
     )
 import pytest
-import json
 from datetime import datetime, timedelta
-from unittest.mock import mock_open, patch
 
-# ---------- Tests for loadClubs ----------
-
-def test_loadClubs_happy_path():
-    mock_data = {'clubs': [{'name': 'Test Club', 'points': '10'}]}
-    with patch('builtins.open', mock_open(read_data=json.dumps(mock_data))):
-        clubs = loadClubs()
-        assert isinstance(clubs, list)
-        assert clubs[0]['name'] == 'Test Club'
-
-def test_loadClubs_sad_path_invalid_json():
-    with patch('builtins.open', mock_open(read_data="not valid json")):
-        with pytest.raises(json.JSONDecodeError):
-            loadClubs()
-
-# ---------- Tests for loadCompetitions ----------
-
-def test_loadCompetitions_happy_path():
-    mock_data = {'competitions': [{'name': 'Comp 1', 'date': '2099-01-01 10:00:00'}]}
-    with patch('builtins.open', mock_open(read_data=json.dumps(mock_data))):
-        competitions = loadCompetitions()
-        assert isinstance(competitions, list)
-        assert competitions[0]['name'] == 'Comp 1'
-
-def test_loadCompetitions_sad_path_missing_key():
-    mock_data = {'wrong_key': []}
-    with patch('builtins.open', mock_open(read_data=json.dumps(mock_data))):
-        with pytest.raises(KeyError):
-            loadCompetitions()
-
-# ---------- Tests for saveClubs / saveCompetitions ----------
-
-def test_saveClubs_happy_path():
-    clubs = [{'name': 'Test Club', 'points': '20'}]
-    with patch('builtins.open', mock_open()) as m:
-        saveClubs(clubs)
-        m.assert_called_once_with('clubs.json', 'w')
-
-def test_saveCompetitions_happy_path():
-    comps = [{'name': 'Test Comp', 'date': '2099-01-01 00:00:00'}]
-    with patch('builtins.open', mock_open()) as m:
-        saveCompetitions(comps)
-        m.assert_called_once_with('competitions.json', 'w')
-
+# Note: JSON loading and saving functionality tested as part of the
+# "test_points_updated.py" integration test
 # ---------- Tests for splitCompetitions ----------
 
 def test_splitCompetitions_happy_path():

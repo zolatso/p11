@@ -32,15 +32,15 @@ def splitCompetitions(competitions):
     return upcoming, finished
 
 def validatePointsPlaces(placesAvailable, placesRequired, pointsAvailable):
-    # Check user has entered positive number - FIXES BUG I IDENTIFIED
+    # These are organized in such a way that conditions that are independent of actual data are tested first
     if placesRequired <= 0:
         return False, f'You must book at least 1 place'
-    # Check user has not asked for more places than the competition has - BUG 242
-    if placesRequired > placesAvailable:
-        return False, f'This competition only has {placesAvailable} places available, please choose fewer places'
     # Check user has not asked for more than 12 places - FIXES BUG 4
     if placesRequired > 12:
         return False, f'You cannot choose more than 12 places per competition, please choose fewer places'
+    # Check user has not asked for more places than the competition has - BUG 242
+    if placesRequired > placesAvailable:
+        return False, f'This competition only has {placesAvailable} places available, please choose fewer places'
     # Checks that club has enough points - FIXES BUG 2
     if placesRequired > pointsAvailable:
         return False, f'You do not have enough points to book that many places. You only have {pointsAvailable} points available'

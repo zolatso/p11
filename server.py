@@ -1,5 +1,6 @@
 import re
 from flask import Flask,render_template,request,redirect,flash,url_for
+from werkzeug.exceptions import BadRequestKeyError 
 
 from helper_functions import (
     loadClubs,
@@ -48,8 +49,11 @@ def showSummary():
 def book(competition,club):
     competitions = loadCompetitions()
     clubs = loadClubs()
-    foundClub = [c for c in clubs if c['name'] == club][0]
-    foundCompetition = [c for c in competitions if c['name'] == competition][0]
+    foundClub = next((c for c in clubs if c['name'] == club), None)
+    foundCompetition = next((c for c in competitions if c['name'] == competition), None)
+    """
+    There is an issue with the logic of the code here.
+    """
     if foundClub and foundCompetition:
         return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:

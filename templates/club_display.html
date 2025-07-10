@@ -5,10 +5,11 @@
     <title>Club Display | GUDLFT Registration</title>
 </head>
 <body>
+    <p>Return to the <a href="{{ url_for('index') }}">login page</a></p>
     <h2>List of all the clubs currently active</h2>
     <table style="border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black;">Club:</td>
+            <td style="border: 1px solid black; padding: 5">Club:</td>
                 {% for club in clubs %}
                     <td style="border: 1px solid black;">{{club['name']}}</td>
                 {% endfor %}
@@ -16,7 +17,7 @@
         <tr>
             <td style="border: 1px solid black;">Points:</td>
                 {% for club in clubs %}
-                    <td style="border: 1px solid black;">{{club['points']}}</td>
+                    <td style="border: 1px solid black; padding: 5">{{club['points']}}</td>
                 {% endfor %}
         </tr>
 </body>
