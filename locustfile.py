@@ -4,7 +4,7 @@ import random
 # Dummy test data from your test DB or JSON (adjust accordingly)
 VALID_EMAIL = "admin@irontemple.com"
 VALID_CLUB_NAME = "Iron Temple"
-VALID_COMPETITION_NAME = "Spring Festival"
+VALID_COMPETITION_NAME = "A new festival"
 
 class WebsiteUser(HttpUser):
     wait_time = between(1, 3)  # Simulates real users waiting between actions
